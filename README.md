@@ -32,13 +32,13 @@ Resource Owner - Resources Server(GMail) - Resources
                - mobile app(3rd party) from App Store
 ```
 
-[![](./img/05.3rd.png)](#)
+[![](./img/05.3rd.png)](#5-scenario)
 
 # 8. Password Anti-pattern
 providing password (credentials) is dangerous in security perspectives
 
 ## Password Anti-pattern Examples
-[![](./img/08.pwanti.png)](#)
+[![](./img/08.pwanti.png)](#password-anti-pattern-examples)
 ```
 Examples of password anti-pattern
 1 open mobile app -> owner Sarah credentials verification
@@ -65,7 +65,7 @@ Resource Owner - OAuth Server - Resources Server(GMail) - Resources
 
 ## OAuth 2.0 Solution
 
-[![](./img/09.oauth2sol.png)
+[![](./img/09.oauth2sol.png)](#oauth-20-solution)
 ```
 Delegating access to resources via http protocol : 
 
@@ -97,45 +97,47 @@ http://tools.ietf.org/html/rfc6749
 
 # 12. OAuth Actors
 OAuth is designed for distributed systems. Consists of serveral actors with distinct roles.
-[![](./img/13.actors.png)
+[![](./img/13.actors.png)](#12-oauth-actors)
 
-- Resource Owner (End-user)
+## Resource Owner
     1. direct access to resources(by using id/pw credentials)
     2. indirect access (by access token): delegates access right to client(3rd party)
         3rd party access the data in the name of the resource owner
 
-[![](./img/13.resourceowner.png)
+[![](./img/13.resourceowner.png)](#resource-owner)
 
-- Client (Cloud or Mobile App)
-    attempts to access resources(protected user data)
+## Client
+    (Cloud or Mobile App) attempts to access resources(protected user data)
     gets and holds Access Token and Refresh Token
     should not hold password of Resource Owner
     identified via client id and client secret (provided by oauth server registration process)
 
-[![](./img/13.client.png)
+[![](./img/13.client.png)](#client)
 
-- OAuth Server(Provider/Authorization Server)
+## OAuth Server
+    (Provider/Authorization Server)
     1. Authentication : login page(id/pw or sso), identity provider/identify access management infrastructure (DB backend)
     2. Consent Server : consent from User for delegation of access right to client
     3. Token Management Infrastructure (DB) : create/verify tokens
         access/refresh token, reg_dt, revoked_dt, valid_yn
 
-[![](./img/13.oauthserver.png)
+[![](./img/13.oauthserver.png)](#oauth-server)
 
-    * OAuth Server End Points
-        /authorize GET (login & consent)
-            returns : auth_code(for authorization code grant), access token(for implicit grant)
-        /token POST
-            authorization: basic client id: client secret
-            returns : access/refresh token ( for authorization code grant, client credentials grant and resources owner pw credentials grant)
-        /verify not standardized
-            only internally accessible by Resource Server
+### OAuth Server End Points
+    /authorize GET (login & consent)
+        returns : auth_code(for authorization code grant), access token(for implicit grant)
+    /token POST
+        authorization: basic client id: client secret
+        returns : access/refresh token ( for authorization code grant, client credentials grant and resources owner pw credentials grant)
+    /verify not standardized
+        only internally accessible by Resource Server
 
-[![](./img/13.oauth.endpoints.png)
+[![](./img/13.oauth.endpoints.png)](oauth-server-end-points)
 
-- Resource Provider (Web API ensures authorized users access the data)
+### Resource Provider
+    (Web API ensures authorized users access the data)
     offeres protected data to authenticated users via http protocol(by web api)
     Asks id/pw by resources owner or Access Token(check validity)
     holds & protect resources
 
-[![](./img/13.resourceserver.png)
+[![](./img/13.resourceserver.png)](#resource-provider)
