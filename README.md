@@ -132,7 +132,7 @@ OAuth is designed for distributed systems. Consists of serveral actors with dist
     /verify not standardized
         only internally accessible by Resource Server
 
-[![](./img/13.oauth.endpoints.png)](oauth-server-end-points)
+[![](./img/13.oauth.endpoints.png)](#oauth-server-end-points)
 
 ### Resource Provider
     (Web API ensures authorized users access the data)
