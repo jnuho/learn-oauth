@@ -99,6 +99,23 @@ http://tools.ietf.org/html/rfc6749
 OAuth is designed for distributed systems. Consists of serveral actors with distinct roles.
 [![](./img/13.actors.png)](#12-oauth-actors)
 
+## OAuth Server
+    (Provider/Authorization Server)
+    1. Authentication : login page(id/pw or sso), identity provider/identify access management infrastructure (DB backend)
+    2. Consent Server : consent from User for delegation of access right to client
+    3. Token Management Infrastructure (DB) : create/verify tokens
+        access/refresh token, reg_dt, revoked_dt, valid_yn
+
+[![](./img/13.oauthserver.png)](#oauth-server)
+
+### Resource Server (Provider)
+    (Web API ensures authorized users access the data)
+    offeres protected data to authenticated users via http protocol(by web api)
+    Asks id/pw by resources owner or Access Token(check validity)
+    Holds & Protect resources, make it available via RestFul API
+
+[![](./img/13.resourceserver.png)](#resource-provider)
+
 ## Resource Owner
     1. direct access to resources(by using id/pw credentials)
     2. indirect access (by access token): delegates access right to client(3rd party)
@@ -109,35 +126,96 @@ OAuth is designed for distributed systems. Consists of serveral actors with dist
 ## Client
     (Cloud or Mobile App) attempts to access resources(protected user data)
     gets and holds Access Token and Refresh Token
-    should not hold password of Resource Owner
     identified via client id and client secret (provided by oauth server registration process)
+    : should not hold password of Resource Owner
 
 [![](./img/13.client.png)](#client)
 
-## OAuth Server
-    (Provider/Authorization Server)
-    1. Authentication : login page(id/pw or sso), identity provider/identify access management infrastructure (DB backend)
-    2. Consent Server : consent from User for delegation of access right to client
-    3. Token Management Infrastructure (DB) : create/verify tokens
-        access/refresh token, reg_dt, revoked_dt, valid_yn
+## 14. OAuth Endpoints
 
-[![](./img/13.oauthserver.png)](#oauth-server)
+- Authorization Endpoint (by oauth server)
+- Token Endpoint (by oauth server)
+- Redirect Endpoint (by client)
+- Resource Endpoint (by resource server)
 
 ### OAuth Server End Points
-    /authorize GET (login & consent)
-        returns : auth_code(for authorization code grant), access token(for implicit grant)
-    /token POST
-        authorization: basic client id: client secret
-        returns : access/refresh token ( for authorization code grant, client credentials grant and resources owner pw credentials grant)
-    /verify not standardized
-        only internally accessible by Resource Server
+
+/authorize GET (login & consent)
+    Input query params:
+        - state (correlate request & response)
+        - scope (type of resources that is requested by a client)
+        - response_type (mandatory)
+        - client_id
+        - redirect_uri
+    Output :
+        Auth_code(for authorization code grant),
+        Access token(for implicit grant)
+        => they are delivered via query parameteri(URI encoded) in the redirect URI
+/token POST
+    Authorization: basic {clientId}:{clientSecret}
+    Input query parameters:
+        - grant_type
+        - code
+        - client_id
+        - redirect_uri
+
+    Output : access/refresh token ( for Authorization code grant, Client credentials grant and Resources owner pw credentials grant)
+/verify not standardized
+    only internally accessible by Resource Server
 
 [![](./img/13.oauth.endpoints.png)](#oauth-server-end-points)
 
-### Resource Provider
-    (Web API ensures authorized users access the data)
-    offeres protected data to authenticated users via http protocol(by web api)
-    Asks id/pw by resources owner or Access Token(check validity)
-    holds & protect resources
+### Client : Redirect Endpoint
+```
+Send information from authorization end point back to the client.
+Reachable under the redirect uri.
+```
+Redirect URI [GET]
 
-[![](./img/13.resourceserver.png)](#resource-provider)
+Input Query Parameter
+    - state
+    - scopes
+    - code
+=> use code to get access token from token endpoint
+
+### Resource Server : Resource Endpoint
+/api
+Authorization: Bearer {AccessToken}
+Access Token and Refresh Token (for Authorization Code Grant,
+Client Credentials Grant and Resource Owner password credentials grant)
+
+## 16. Overview of OAuth Tokens and Credentials
+
+Tokens & Credentials
+
+* Tokens
+Access Token(AT) : client uses AT to access resources
+    - validity is limited for a short period of time
+    - same AT can be used for any number of requests
+    - holder's identity is never checked : MUST make AT confidential!
+Refresh Token(RT) : longer expiration date (e.g. 30-day or 3 months)
+    - request new AT after AT expired
+    - credentials of resource owner do not have to be checked again
+    - stored and sent by client sent to token endpoint
+    - never sent to the resource server
+Authorization Code (Code)
+    - short expiration time
+
+* Credentials
+    - Resource Owner credentials
+    - Client Credentials : clientId & clientSecret (whenever client accesses token end point)
+    - Access Token
+    - Authorization Code
+
+Client Registration
+- With OAuth Provider
+- Client provides to OAuth Provider
+    - Redirect URI
+    - Required scopes (type of information accessed by client)
+- Client obtains from OAuth Provider
+    - ClientId
+    - ClientSecret
+
+## 17. Example: Interaction of OAuth Components in an OAuth Flow
+
+    
